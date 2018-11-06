@@ -1,5 +1,5 @@
 """
-    JAC - jdechalendar@stanford.edu
+JAC - jdechalendar@stanford.edu
 """
 from flask import Flask, render_template, request, session
 import os
@@ -13,19 +13,25 @@ app = Flask(__name__)
 def index():
     print(session)
     if request.method == 'POST':
-        if 'fixedNodes' in request.files and request.files['fixedNodes'] and request.files['fixedNodes'].filename.rsplit('.', 1)[1] == 'csv':
+        if (('fixedNodes' in request.files) and request.files['fixedNodes']
+            and (request.files['fixedNodes'].filename
+                 .rsplit('.', 1)[1] == 'csv')):
             print('Reading the csv file')
             session['csv'] = 1
             fullfilename = os.path.join(
                 app.config['UPLOAD_FOLDER'], "curr.csv")
             request.files['fixedNodes'].save(fullfilename)
-        if 'glm_file' in request.files and request.files['glm_file'] and request.files['glm_file'].filename.rsplit('.', 1)[1] == 'glm':
+
+        if (('glm_file' in request.files) and request.files['glm_file']
+            and (request.files['glm_file'].filename
+                 .rsplit('.', 1)[1] == 'glm')):
             print('Reading the glm file')
             session.clear()
             session['glm_name'] = request.files['glm_file'].filename
             fullfilename = os.path.join(
                 app.config['UPLOAD_FOLDER'], "curr.glm")
             request.files['glm_file'].save(fullfilename)
+
     return render_template("index.html")
 
 
@@ -48,6 +54,7 @@ def data():
         glm_name = ''
     JSONstr = '{"file":"' + glm_name + '","graph":' + \
         graphJSON + ',"fixedNodes":' + fixedNodesJSON + '}'
+
     return JSONstr
 
 
@@ -66,6 +73,7 @@ def parseFixedNodes(nodesFile):
             names.append(bla[0])
             x.append(float(bla[1]))
             y.append(float(bla[2]))
+
     return json.dumps({'names': names, 'x': x, 'y': y})
 
 
