@@ -9,7 +9,7 @@ RUN pip3 install --trusted-host pypi.org -r /requirements.txt
 ADD ./glm-plotter /code
 WORKDIR /code
 
-CMD ["python3", "glm-plotter.py"]
+CMD ["python3", "-u", "glm-plotter.py"]
 
 
 
