@@ -3,9 +3,6 @@ JAC - jdechalendar@stanford.edu
 """
 import pandas as pd
 
-def test():
-    print('*****')
-    
 def readGLM(iFile, verb=0):
     """
     Main function to parse GLM files
