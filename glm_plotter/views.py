@@ -1,14 +1,12 @@
 """
 JAC - jdechalendar@stanford.edu
 """
+from glm_plotter import app
+
 from flask import Flask, render_template, request, session, jsonify
 import os
 import json
-import GLMparser
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)
+from . import GLMparser
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -16,8 +14,10 @@ def index():
     print(f'{request.method} /')
     # print(session)
 
-    csvFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.csv")
-    glmFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.glm")
+    csvFile = os.path.join(os.getcwd(), 'glm_plotter',
+                           app.config['UPLOAD_FOLDER'], "curr.csv")
+    glmFile = os.path.join(os.getcwd(), 'glm_plotter',
+                           app.config['UPLOAD_FOLDER'], "curr.glm")
 
     glm_name = ''
     fixedNodesJSON = json.loads('{"names":[], "x":[], "y":[]}')
@@ -37,8 +37,8 @@ def index():
 
             print(f'Reading the csv file: {request.files["fixedNodes"].filename}')
             session['csv'] = 1
-            fullfilename = os.path.join(
-                app.config['UPLOAD_FOLDER'], "curr.csv")
+            fullfilename = os.path.join(os.getcwd(), 'glm_plotter',
+                                        app.config['UPLOAD_FOLDER'], "curr.csv")
             request.files['fixedNodes'].save(fullfilename)
 
             if os.path.isfile(csvFile):
@@ -62,7 +62,7 @@ def index():
             session.clear()
             session['glm_name'] = request.files['glm_file'].filename
             fullfilename = os.path.join(
-                app.config['UPLOAD_FOLDER'], "curr.glm")
+                os.getcwd(), 'glm_plotter', app.config['UPLOAD_FOLDER'], "curr.glm")
             request.files['glm_file'].save(fullfilename)
 
             if os.path.isfile(glmFile):
@@ -103,8 +103,10 @@ def data():
     if ('json_string' in session and session['json_string']):
         return session['json_string']
 
-    csvFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.csv")
-    glmFile = os.path.join(app.config['UPLOAD_FOLDER'], "curr.glm")
+    csvFile = os.path.join(os.getcwd(), 'glm_plotter',
+                           app.config['UPLOAD_FOLDER'], "curr.csv")
+    glmFile = os.path.join(os.getcwd(), 'glm_plotter',
+                           app.config['UPLOAD_FOLDER'], "curr.glm")
 
     glm_name = ''
     fixedNodesJSON = json.loads('{"names":[], "x":[], "y":[]}')
@@ -151,8 +153,3 @@ def parseFixedNodes(nodesFile):
             y.append(float(bla[2]))
 
     return json.dumps({'names': names, 'x': x, 'y': y})
-
-
-if __name__ == "__main__":
-    app.secret_key = 'B0er23j/4yX R~XHH!jmN]LWX/,?Rh'
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))

@@ -12,15 +12,23 @@ Here is a screen shot from a visualisation of the [IEEE 123-node test feeder](ht
 ## Local or Virtual Environment
 
 - Install python packages (version 3.5 was used for development) - see install.txt.
-- From the command line, change directory to the directory glm-plotter located in this repository. `cd path-to-repo/glm-plotter`
+- From the command line, change directory to the directory glm-plotter located in this repository. `cd <path-to-repo>`
 - If the python packages were installed in a virtual environment, activate the virtual environment
-- Run the glm-plotter.py file. `python glm-plotter.py`
+- Run the glm_plotter.py file. `python glm_plotter.py`
 - Open a browser and go to http://localhost:5000.
 
 ## Docker
 
 - Run `docker-compose up --build`
 - Open a browser and go to http://localhost:5000.
+
+## Use as a module
+
+- glm plotter can also be used as a module
+- Execute `pip install <repo or directory>` to install it as a module.
+- In your application, import the views and/or the parsing library, e.g.,
+- `from glm_plotter import views`
+- `from glm_plotter import GLMparser`
 
 # Description
 
