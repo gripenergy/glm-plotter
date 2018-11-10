@@ -77,7 +77,6 @@ def renderMain(method, files, glm_name):
             files['glm_file'].save(glmFile)
 
             if os.path.isfile(glmFile):
-                print('5')
                 objs, modules, commands = GLMparser.readGLM(glmFile)
                 graphJSON = GLMparser.createD3JSON(objs)
                 with open(graph_json_file, 'w') as outfile:

@@ -19,6 +19,7 @@ def index():
         request.method, request.files, controllers.get_glm_file_name(session))
     if 'glm_name' in resp:
         session.clear()
+        print(f'Setting GLM name in session: {resp["glm_name"]}')
         session['glm_name'] = resp['glm_name']
 
     return render_template("index.html")
