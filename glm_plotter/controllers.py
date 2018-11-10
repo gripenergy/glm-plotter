@@ -11,14 +11,16 @@ fixed_nodes_json_file = 'fixed_nodes.json'
 graph_json_file = 'graph.json'
 
 
+def get_glm_file_name(session):
+    return session['glm_name'] if 'glm_name' in session else None
+
+
 def getCsvFile():
-    return os.path.join(os.getcwd(), 'glm_plotter',
-                        config['UPLOAD_FOLDER'], "curr.csv")
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),                         config['UPLOAD_FOLDER'], "curr.csv")
 
 
 def getGlmFile():
-    return os.path.join(os.getcwd(), 'glm_plotter',
-                        config['UPLOAD_FOLDER'], "curr.glm")
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),                         config['UPLOAD_FOLDER'], "curr.glm")
 
 
 def getDefaultGlmName():
@@ -34,8 +36,6 @@ def getDefaultGraphJson():
 
 
 def renderMain(method, files, glm_name):
-    print(f'{method} /')
-
     csvFile = getCsvFile()
     glmFile = getGlmFile()
     glm_name = glm_name if glm_name else getDefaultGlmName()

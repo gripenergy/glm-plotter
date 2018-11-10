@@ -10,17 +10,13 @@ from . import GLMparser
 from . import controllers
 
 
-def get_glm_file_name(session):
-    return session['glm_name'] if 'glm_name' in session else None
-
-
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    print(f'{request.method} /')
+    print(f'{request.method} {request.path}')
     # print(session)
 
     resp = controllers.renderMain(
-        request.method, request.files, get_glm_file_name(session))
+        request.method, request.files, controllers.get_glm_file_name(session))
     if 'glm_name' in resp:
         session.clear()
         session['glm_name'] = resp['glm_name']
@@ -30,8 +26,8 @@ def index():
 
 @app.route("/data", methods=['GET', 'POST'])
 def data():
-    print(f'{request.method}  /data')
+    print(f'{request.method} {request.path}')
     # print(session)
     resp = controllers.getGraphata(
-        get_glm_file_name(session))
+        controllers.get_glm_file_name(session))
     return jsonify(resp)
