@@ -20,7 +20,8 @@ def getCsvFile():
 
 
 def getGlmFile():
-    return os.path.join(os.path.dirname(os.path.realpath(__file__)),                         config['UPLOAD_FOLDER'], "curr.glm")
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),                         config['UPLOAD_FOLDER'], "ll
+                        .glm")
 
 
 def getDefaultGlmName():
@@ -76,14 +77,18 @@ def renderMain(method, files, glm_name):
             glm_name = files['glm_file'].filename
             files['glm_file'].save(glmFile)
 
-            if os.path.isfile(glmFile):
-                objs, modules, commands = GLMparser.readGLM(glmFile)
-                graphJSON = GLMparser.createD3JSON(objs)
-                with open(graph_json_file, 'w') as outfile:
-                    print(f'Writing to {graph_json_file}: {graphJSON}')
-                    outfile.write(graphJSON)
+            parseGlmFile(glmFile)
 
     return {"glm_name": glm_name}
+
+
+def parseGlmFile(glmFile):
+    if os.path.isfile(glmFile):
+        objs, modules, commands = GLMparser.readGLM(glmFile)
+        graphJSON = GLMparser.createD3JSON(objs)
+        with open(graph_json_file, 'w') as outfile:
+            print(f'Writing to {graph_json_file}: {graphJSON}')
+            outfile.write(graphJSON)
 
 
 def getGraphata(glm_name):
