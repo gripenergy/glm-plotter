@@ -81,7 +81,7 @@ def renderMain(method, files, glm_name):
     return {"glm_name": glm_name}
 
 
-def controllers(glmFile):
+def parseGlmFile(glmFile):
     if not os.path.isfile(glmFile):
         raise ValueError(f'File {glmFile} could not be read')
     objs, modules, commands = GLMparser.readGLM(glmFile)
