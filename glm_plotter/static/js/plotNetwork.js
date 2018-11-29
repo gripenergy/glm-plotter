@@ -19,8 +19,8 @@ var container = svg.append("g");
 var min_zoom = .1;
 var max_zoom = 5;
 
-function zoomFit(root, paddingPercent, transitionDuration) {
-  console.log('zoomFit', 'root',root, 'paddingPercent', paddingPercent, 'transitionDuration', transitionDuration)
+function zoomFit(zoom, root, paddingPercent, transitionDuration) {
+  //console.log('zoomFit', 'root',root, 'paddingPercent', paddingPercent, 'transitionDuration', transitionDuration)
 	var bounds = root.node().getBBox();
 	var parent = root.node().parentElement;
 	var fullWidth = parent.clientWidth,
@@ -167,8 +167,8 @@ d3.json("/data", function(error, mydata) {
       .attr("y", function(d) { return d.y+20; });
   })
  setTimeout( () => {
-  zoomFit(container,0.95, 500);
- },3000)
+  zoomFit(zoom, container,0.95, 500);
+ },4000)
   
 });
 
