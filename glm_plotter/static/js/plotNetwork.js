@@ -19,6 +19,27 @@ var container = svg.append("g");
 var min_zoom = .1;
 var max_zoom = 5;
 
+function zoomFit(root, paddingPercent, transitionDuration) {
+  console.log('zoomFit', 'root',root, 'paddingPercent', paddingPercent, 'transitionDuration', transitionDuration)
+	var bounds = root.node().getBBox();
+	var parent = root.node().parentElement;
+	var fullWidth = parent.clientWidth,
+	    fullHeight = parent.clientHeight;
+	var width = bounds.width,
+	    height = bounds.height;
+	var midX = bounds.x + width / 2,
+	    midY = bounds.y + height / 2;
+	if (width == 0 || height == 0) return; // nothing to fit
+	var scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
+	var translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+	console.trace("zoomFit", translate, scale);
+	root
+		.transition()
+		.duration(transitionDuration || 0) // milliseconds
+		.call(zoom.translate(translate).scale(scale).event);
+}
+
 var zoom = d3.behavior.zoom()
   .scaleExtent([min_zoom,max_zoom])
   .on("zoom",zoomed);
@@ -145,6 +166,10 @@ d3.json("/data", function(error, mydata) {
     nodeg.attr("x", function(d) { return d.x + 8; })
       .attr("y", function(d) { return d.y+20; });
   })
+ setTimeout( () => {
+  zoomFit(container,0.95, 500);
+ },3000)
+  
 });
 
 // after a node has been moved manually it is now fixed
