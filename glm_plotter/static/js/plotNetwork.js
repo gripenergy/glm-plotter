@@ -315,12 +315,25 @@ function handleNodeSearch() {
 }
 
 function nodeSearcher(targetNodeNm) {
-  d3.selectAll("g.node").each(function(d) {
+  const nodes = d3.selectAll("g.node");
+  nodes.each(function(d) {
     a = 1;
-    if (d.name.indexOf(targetNodeNm) > -1) {
-      d3.select(this).classed("highlight", (d.highlight = true));
+    if (d.name === targetNodeNm) {
+      console.log('Found',d.name)
+      d3.select(this).classed("highlight", true);
+      // Highlight the node text too
+      d3.select(this)
+        .selectAll("text")
+        .each(function() {
+          d3.select(this).classed("highlight", true);
+        });
     } else {
-      d3.select(this).classed("highlight", (d.highlight = false));
+      d3.select(this).classed("highlight", false);
+      d3.select(this)
+        .selectAll("text")
+        .each(function() {
+          d3.select(this).classed("highlight", false);
+        });
     }
   });
 }
