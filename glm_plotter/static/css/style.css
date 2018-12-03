@@ -57,7 +57,7 @@ circle.meter {
   font-weight: bold;
 }
 .node text.highlight {
-  font-size: 30px;
+  font-size: 45px;
 }
 
 .node:hover circle {

@@ -311,15 +311,17 @@ function removePrefix() {
 }
 
 function handleNodeSearch() {
-  nodeSearcher(document.getElementById("nodeSearchNm").value);
+  console.log("handleNodeSearch");
+  nodeSelect(document.getElementById("nodeSearchNm").value);
 }
 
-function nodeSearcher(targetNodeNm) {
+function nodeSelect(targetNodeNm) {
+  console.log("nodeSearcher");
   const nodes = d3.selectAll("g.node");
   nodes.each(function(d) {
-    a = 1;
     if (d.name === targetNodeNm) {
-      console.log('Found',d.name)
+      console.log("Found", d, d.name);
+      console.log("Selecting", d3.select(this));
       d3.select(this).classed("highlight", true);
       // Highlight the node text too
       d3.select(this)
@@ -328,12 +330,21 @@ function nodeSearcher(targetNodeNm) {
           d3.select(this).classed("highlight", true);
         });
     } else {
-      d3.select(this).classed("highlight", false);
-      d3.select(this)
-        .selectAll("text")
-        .each(function() {
-          d3.select(this).classed("highlight", false);
-        });
+      nodeUnselectBySelection(d3.select(this));
+    }
+  });
+}
+function nodeUnselectBySelection(unselectNodes) {
+  console.log("Unselecting", unselectNodes);
+  unselectNodes.classed("highlight", false);
+  unselectNodes.selectAll("text").each(function() {
+    d3.select(this).classed("highlight", false);
+  });
+}
+function nodeUnselectByName(name) {
+  d3.selectAll("g.node").each(function(d) {
+    if (d.name === name) {
+      nodeUnselectBySelection(d3.select(this));
     }
   });
 }
