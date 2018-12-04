@@ -315,11 +315,11 @@ function handleNodeSearch() {
   nodeSelect(document.getElementById("nodeSearchNm").value);
 }
 
-function nodeSelect(targetNodeNm) {
-  console.log("nodeSearcher");
+function nodeSelect(targetNodeName) {
+  onsole.log('nodeSelect',targetNodeName);
   const nodes = d3.selectAll("g.node");
   nodes.each(function(d) {
-    if (d.name === targetNodeNm) {
+    if (d.name === targetNodeName) {
       console.log("Found", d, d.name);
       console.log("Selecting", d3.select(this));
       d3.select(this).classed("highlight", true);
@@ -335,7 +335,7 @@ function nodeSelect(targetNodeNm) {
   });
 }
 function nodeUnselectBySelection(unselectNodes) {
-  console.log("Unselecting", unselectNodes);
+  //console.log("Unselecting", unselectNodes);
   unselectNodes.classed("highlight", false);
   unselectNodes.selectAll("text").each(function() {
     d3.select(this).classed("highlight", false);
