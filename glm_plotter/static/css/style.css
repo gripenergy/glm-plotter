@@ -115,6 +115,7 @@ circle.meter {
 .link:hover line,
 .link line.highlight {
   stroke: #ff0000;
+  stroke-width: 8px;
 }
 
 .link:hover text {

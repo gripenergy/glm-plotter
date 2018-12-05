@@ -141,7 +141,7 @@ d3.json("/data", function(error, mydata) {
     .append("g")
     .append("text")
     .text(function(d) {
-      return d.linkType;
+      return `${d.name}: ${d.linkType}`;
     });
   var nodeg = node
     .append("g")
@@ -340,7 +340,7 @@ function nodeSelect(targetNodeName, selection) {
 function nodeUnselectBySelection(unselectNodes) {
   //console.log("Unselecting", unselectNodes);
   unselectNodes.classed("highlight", false);
-  unselectNodes.selectAll("text").each(function() {
+  unselectNodes.selectAll('text,line').each(function() {
     d3.select(this).classed("highlight", false);
   });
 }
