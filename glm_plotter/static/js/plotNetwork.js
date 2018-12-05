@@ -315,19 +315,22 @@ function handleNodeSearch() {
   nodeSelect(document.getElementById("nodeSearchNm").value);
 }
 
-function nodeSelect(targetNodeName) {
-  onsole.log('nodeSelect',targetNodeName);
-  const nodes = d3.selectAll("g.node");
-  nodes.each(function(d) {
+function nodeSelect(targetNodeName, selection) {
+  console.log('nodeSelect',targetNodeName);
+  if (!selection) {
+    selection = 'g.node,g.link';
+  }
+  const nodes = d3.selectAll(selection);
+  nodes.each(function (d) {
     if (d.name === targetNodeName) {
-      console.log("Found", d, d.name);
-      console.log("Selecting", d3.select(this));
-      d3.select(this).classed("highlight", true);
+      console.log('Found', d, d.name);
+      console.log('Selecting', d3.select(this));
+      d3.select(this).classed('highlight', true);
       // Highlight the node text too
       d3.select(this)
-        .selectAll("text")
-        .each(function() {
-          d3.select(this).classed("highlight", true);
+        .selectAll('text')
+        .each(function () {
+          d3.select(this).classed('highlight', true);
         });
     } else {
       nodeUnselectBySelection(d3.select(this));

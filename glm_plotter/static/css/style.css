@@ -112,9 +112,11 @@ circle.meter {
   font-size: 16px;
   display: none;
 }
-.link:hover line {
-  stroke: #000000;
+.link:hover line,
+.link line.highlight {
+  stroke: #ff0000;
 }
+
 .link:hover text {
   display: inline;
 }
