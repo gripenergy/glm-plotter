@@ -316,21 +316,21 @@ function handleNodeSearch() {
 }
 
 function nodeSelect(targetNodeName, selection) {
-  console.log('nodeSelect',targetNodeName);
+  console.log("nodeSelect", targetNodeName);
   if (!selection) {
-    selection = 'g.node,g.link';
+    selection = "g.node,g.link";
   }
   const nodes = d3.selectAll(selection);
-  nodes.each(function (d) {
+  nodes.each(function(d) {
     if (d.name === targetNodeName) {
-      console.log('Found', d, d.name);
-      console.log('Selecting', d3.select(this));
-      d3.select(this).classed('highlight', true);
+      console.log("Found", d, d.name);
+      console.log("Selecting", d3.select(this));
+      d3.select(this).classed("highlight", true);
       // Highlight the node text too
       d3.select(this)
-        .selectAll('text')
-        .each(function () {
-          d3.select(this).classed('highlight', true);
+        .selectAll("text,line")
+        .each(function() {
+          d3.select(this).classed("highlight", true);
         });
     } else {
       nodeUnselectBySelection(d3.select(this));
