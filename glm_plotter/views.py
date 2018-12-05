@@ -29,6 +29,6 @@ def index():
 def data():
     print(f'{request.method} {request.path}')
     # print(session)
-    resp = controllers.getGraphata(
+    resp = controllers.getGraphData(
         controllers.get_glm_file_name(session))
     return jsonify(resp)

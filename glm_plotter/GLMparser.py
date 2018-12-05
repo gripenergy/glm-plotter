@@ -243,6 +243,8 @@ def createD3JSON(objs, fileNm_out=''):
                     + ',"linkType":"' + links[len(links)-1][2] + '"'
                     + ',"name":"' + links[len(links)-1][3] + '"}\n')
     JSONstr += '  ]\n}'
+    #print(f'**** {JSONstr}')
+    #print(f'**** {fileNm_out}')
     if fileNm_out:
         with open(fileNm_out, 'w') as f:
             f.write(JSONstr)

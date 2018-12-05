@@ -92,8 +92,8 @@ def parseGlmFile(glmFile):
     return graphJSON
 
 
-def getGraphata(glm_name):
-    print(f'getGraphata glm file name: {glm_name}')
+def getGraphData(glm_name):
+    print(f'getGraphData glm file name: {glm_name}')
     csvFile = getCsvFile()
     glm_name = glm_name if glm_name else getDefaultGlmName()
     fixedNodesJSON = getDefaultFixedNodesJson()
