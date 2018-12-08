@@ -151,7 +151,7 @@ d3.json("/data", function(error, mydata) {
       if (OPTIONS.lineDisplayText.name) {
         txt.push(d.name);
       }
-      if (OPTIONS.lineDisplayText.name) {
+      if (OPTIONS.lineDisplayText.linkType) {
         txt.push(d.linkType);
       }
       return txt.join(": ");
