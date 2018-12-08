@@ -52,21 +52,21 @@ circle.meter {
   fill: rgb(44, 160, 44);
   fill: rgb(178, 106, 0);
 }
-.highlight {
-  fill: #ff0000;
-  font-weight: bold;
-}
-.node text.highlight {
-  font-size: 45px;
-}
 
-.node:hover circle {
+.node:hover circle,
+.node.highlight circle {
   fill: #000;
   fill: #ff0000;
 }
-.node.load.capacitor:hover circle {
+.node.load.capacitor:hover circle,
+.node.load.capacitor.highlight circle {
   fill: #000;
   fill: #ff0000;
+}
+.node:hover text,
+.node.highlight text {
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .node g {
@@ -74,10 +74,16 @@ circle.meter {
   font-family: "Verdana";
   font-size: 16px;
 }
-.node:hover g {
+.node:hover g,
+.node.highlight g {
   display: inline;
+  font-weight: bold;
 }
-
+.node:hover text,
+.node.highlight text {
+  font-size: 30px;
+  font-weight: bold;
+}
 /* Format links */
 .link {
   stroke: #999;
@@ -113,13 +119,17 @@ circle.meter {
   display: none;
 }
 .link:hover line,
-.link line.highlight {
+.link.highlight line {
   stroke: #ff0000;
   stroke-width: 8px;
 }
 
-.link:hover text {
+.link:hover text,
+.link.highlight text {
+  /* fill: #ff0000; */
   display: inline;
+  font-weight: bold;
+  font-size: 30px;
 }
 
 /* Legend */
