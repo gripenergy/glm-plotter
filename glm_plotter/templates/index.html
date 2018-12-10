@@ -12,6 +12,7 @@
 <div id="main"></div>
 <script src="static/lib/js/d3.js"></script>
 
+<!-- <script src="static/js/D3_NetworkTopology.js"></script> -->
 <script src="static/js/plotNetwork.js"></script>
 
 
@@ -67,7 +68,7 @@ Legend:
     <input name="searchNodeButton" 
 		type="button" 
 		value="search" 
-		onclick="handleNodeSearch()" />
+		onclick="D3_NetworkTopology.then((d) => d.default.handleNodeSearch())" />
 </div>
 <div id="gravityChooser">
 	<input name="garvityTxt" 
