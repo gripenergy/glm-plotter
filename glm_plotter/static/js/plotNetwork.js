@@ -145,30 +145,15 @@ d3.json("/data", function(error, mydata) {
     })
     .attr("class", "nodeNm");
 
-  // add labels at end so they are on top
-  var lineLabel = link
-    .append("text")
-    .text(function(d) {
-      let txt = [];
-      if (OPTIONS.linkDisplayText.linkType) {
-        txt.push(d.linkType);
-      }
-      if (OPTIONS.linkDisplayText.name) {
-        txt.push(d.name);
-      }
-      return txt.join(": ");
-    })
-    .attr("class", "nodeNm");
-  // Need to add x and y to line to get this to display properly
-  /*  var lineg = link
-    .append("g")
+  var lineLabel = link.append("text").text(function(d) {
+    return d.name;
+  });
+  var lineLabel2 = link
     .append("text")
     .style("font-size", 16)
     .text(function(d) {
-      if (d.linkType) {
-        return d.linkType;
-      }
-    }); */
+      return d.linkType;
+    });
 
   var nodeg = node
     .append("g")
@@ -191,15 +176,12 @@ d3.json("/data", function(error, mydata) {
     }
   });
 
-  node.on("mouseover", e => {
+  node.on("mouseover", function(e) {
     mouseOverHandler(e);
-    d3.selectAll("g.node").each(function(d) {
-      if (d.name === e.name) {
-        d3.select(this)
-          .select("circle")
-          .attr("r", 20);
-      }
-    });
+    //d3.select(this).moveToFront(); //d3 extended needed
+    d3.select(this)
+      .select("circle")
+      .attr("r", 20);
   });
   node.on("mouseout", e => {
     //mouseOutHandler(e);
@@ -238,6 +220,13 @@ d3.json("/data", function(error, mydata) {
       .attr("y", function(d) {
         return (d.source.y + d.target.y) / 2 + 20;
       });
+    lineLabel2
+      .attr("x", function(d) {
+        return (d.source.x + d.target.x) / 2 + 8;
+      })
+      .attr("y", function(d) {
+        return (d.source.y + d.target.y) / 2 + 40;
+      });
     circle
       .attr("cx", function(d) {
         return d.x;
@@ -254,18 +243,12 @@ d3.json("/data", function(error, mydata) {
       });
     nodeg
       .attr("x", function(d) {
+        /* console.log("x nodeg ", d, "this", this); */
         return d.x + 8;
       })
       .attr("y", function(d) {
         return d.y + 20;
       });
-    /*     lineg
-      .attr("x", function(d) {
-        return d.x + 8;
-      })
-      .attr("y", function(d) {
-        return d.y + 20;
-      }); */
   });
   setTimeout(() => {
     zoomFit(zoom, container, 0.95, 500);
@@ -380,12 +363,6 @@ function nodeSelect(targetNodeName, selection) {
       console.log("Found", d, d.name);
       console.log("Selecting", d3.select(this));
       d3.select(this).classed("highlight", true);
-      // Highlight the node text too
-      /*       d3.select(this)
-        .selectAll("text,line")
-        .each(function() {
-          d3.select(this).classed("highlight", true);
-        }); */
     } else {
       nodeUnselectBySelection(d3.select(this));
     }
