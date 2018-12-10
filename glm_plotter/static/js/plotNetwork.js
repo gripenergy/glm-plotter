@@ -1,11 +1,13 @@
 // JAC - jdechalendar@stanford.edu
 
 var OPTIONS = {
-  lineDisplayText: {
+  linkDisplayText: {
     name: true,
-    linkType: false
+    linkType: true
   }
 };
+
+let mouseOverHandler;
 
 var width = 960,
   height = 760;
@@ -148,11 +150,11 @@ d3.json("/data", function(error, mydata) {
     .append("text")
     .text(function(d) {
       let txt = [];
-      if (OPTIONS.lineDisplayText.name) {
-        txt.push(d.name);
-      }
-      if (OPTIONS.lineDisplayText.linkType) {
+      if (OPTIONS.linkDisplayText.linkType) {
         txt.push(d.linkType);
+      }
+      if (OPTIONS.linkDisplayText.name) {
+        txt.push(d.name);
       }
       return txt.join(": ");
     })
@@ -189,6 +191,26 @@ d3.json("/data", function(error, mydata) {
     }
   });
 
+  node.on("mouseover", e => {
+    mouseOverHandler(e);
+    d3.selectAll("g.node").each(function(d) {
+      if (d.name === e.name) {
+        d3.select(this)
+          .select("circle")
+          .attr("r", 20);
+      }
+    });
+  });
+  node.on("mouseout", e => {
+    //mouseOutHandler(e);
+    d3.selectAll("g.node").each(function(d) {
+      if (d.name === e.name) {
+        d3.select(this)
+          .select("circle")
+          .attr("r", 10);
+      }
+    });
+  });
   force
     .nodes(graph.nodes)
     .links(graph.links)
@@ -392,3 +414,9 @@ function changeGravity() {
 function changeCharge() {
   force.charge(Number(document.getElementById("chargeVal").value));
 }
+function registerMouseOverHandler(handler) {
+  mouseOverHandler = handler;
+}
+registerMouseOverHandler(e => {
+  /* console.log(e.name) */
+});

@@ -198,7 +198,7 @@ def createD3JSON(objs, fileNm_out=''):
             [link['class'] for link in link_objs],
             [link['name'] for link in link_objs]))
     # define nodes I want to plot
-    node_type = ['node', 'load', 'meter', 'triplex_meter', 'triplex_node']
+    node_type = ['node', 'load', 'meter', 'triplex_meter', 'triplex_node', 'pole']
     parent_objs = [obj for obj in objs if 'parent' not in obj]
     node_objs = [obj for obj in parent_objs if obj['class'] in node_type]
 
