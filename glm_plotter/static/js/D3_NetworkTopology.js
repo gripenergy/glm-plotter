@@ -221,16 +221,17 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
   });
   node.on('mouseover', function (e) {
     // d3.select(this).moveToFront(); //d3 extended needed
+    mouseOverHandler(e); //Run first in case of re-render (React).
     d3.select(this)
       .select('circle')
       .attr('r', 20);
-    mouseOverHandler(e);
+
   });
   node.on('mouseout', function (e) {
+    mouseOutHandler(e); //Run first in case of re-render (React).
     d3.select(this)
       .select('circle')
       .attr('r', 10);
-    mouseOutHandler(e);
   });
   force
     .nodes(graph.nodes)
