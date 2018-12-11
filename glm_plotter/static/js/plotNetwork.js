@@ -13,7 +13,7 @@ d3.json("/data", function(error, mydata) {
   data = mydata;
 });
 
-console.log("$$$$", el);
+//console.log("$$$$", el);
 D3_NetworkTopology.then(d => {
   console.log("D3_NetworkTopology", d.default);
   d.default.create(el, data, configuration, d3);

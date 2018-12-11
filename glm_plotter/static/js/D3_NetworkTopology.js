@@ -31,6 +31,7 @@
 let d3; // Allow the right version to be passed in.
 
 let mouseOverHandler = e => {};
+let mouseOutHandler = e => {};
 
 const D3_NetworkTopology = {};
 
@@ -43,7 +44,6 @@ const defaultConfiguration = {
   width: 960,
   height: 760
 };
-
 
 let force;
 
@@ -213,6 +213,12 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
     }
   });
 
+  link.on('mouseover', function (e) {
+    mouseOverHandler(e);
+  });
+  link.on('mouseout', function (e) {
+    mouseOutHandler(e);
+  });
   node.on('mouseover', function (e) {
     mouseOverHandler(e);
     // d3.select(this).moveToFront(); //d3 extended needed
@@ -221,7 +227,7 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       .attr('r', 20);
   });
   node.on('mouseout', e => {
-    // mouseOutHandler(e);
+    mouseOutHandler(e);
     d3.selectAll('g.node').each(function (d) {
       if (d.name === e.name) {
         d3.select(this)
@@ -401,10 +407,14 @@ function changeGravity() {
   force.gravity(Number(document.getElementById('gravityVal').value));
 }
 function changeCharge() {
+  /*  */
   force.charge(Number(document.getElementById('chargeVal').value));
 }
 function registerMouseOverHandler(handler) {
   mouseOverHandler = handler;
+}
+function registerMouseOutHandler(handler) {
+  mouseOutHandler = handler;
 }
 
 D3_NetworkTopology.update = (el, data, configuration, chart) => {
@@ -428,7 +438,7 @@ D3_NetworkTopology.destroy = chart => {
 };
 
 D3_NetworkTopology.registerMouseOverHandler = registerMouseOverHandler;
-
+D3_NetworkTopology.registerMouseOutHandler = registerMouseOutHandler;
 D3_NetworkTopology.nodeSelect = nodeSelect;
 
 D3_NetworkTopology.saveXY = saveXY;

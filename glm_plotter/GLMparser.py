@@ -198,12 +198,13 @@ def createD3JSON(objs, fileNm_out=''):
             [link['class'] for link in link_objs],
             [link['name'] for link in link_objs]))
     # define nodes I want to plot
-    node_type = ['node', 'load', 'meter', 'triplex_meter', 'triplex_node', 'pole']
+    print(f'ObjectsAAA',objs)
+    node_type = ['node', 'load', 'meter', 'triplex_meter', 'triplex_node', 'pole', 'substation']
     parent_objs = [obj for obj in objs if 'parent' not in obj]
     node_objs = [obj for obj in parent_objs if obj['class'] in node_type]
 
     # children I want to plot
-    child_type = ['diesel_dg', 'capacitor']
+    child_type = ['diesel_dg', 'capacitor', 'meter']
     children = dict([(obj['parent'], obj['class'])
                      for obj in objs if obj['class'] in child_type])
     # find unique nodes

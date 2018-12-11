@@ -48,6 +48,13 @@ circle.node {
   fill: rgb(204, 204, 0);
   fill: rgb(255, 169, 44);
 }
+.node.substation.meter circle {
+  fill: rgb(255, 255, 0);
+}
+.node.pole circle {
+  fill: rgb(244, 113, 66);
+}
+
 circle.meter {
   fill: rgb(44, 160, 44);
   fill: rgb(178, 106, 0);
