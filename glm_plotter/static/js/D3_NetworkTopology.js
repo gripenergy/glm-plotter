@@ -220,21 +220,17 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
     mouseOutHandler(e);
   });
   node.on('mouseover', function (e) {
-    mouseOverHandler(e);
     // d3.select(this).moveToFront(); //d3 extended needed
     d3.select(this)
       .select('circle')
       .attr('r', 20);
+    mouseOverHandler(e);
   });
-  node.on('mouseout', e => {
+  node.on('mouseout', function (e) {
+    d3.select(this)
+      .select('circle')
+      .attr('r', 10);
     mouseOutHandler(e);
-    d3.selectAll('g.node').each(function (d) {
-      if (d.name === e.name) {
-        d3.select(this)
-          .select('circle')
-          .attr('r', 10);
-      }
-    });
   });
   force
     .nodes(graph.nodes)
@@ -380,7 +376,8 @@ function nodeSelect(targetNodeName, selection) {
     if (d.name === targetNodeName) {
       console.log('Found', d, d.name);
       console.log('Selecting', d3.select(this));
-      d3.select(this).classed('highlight', true);
+      d3.select(this).classed('highlight', true).select('circle')
+      .attr('r', 20);
     } else {
       nodeUnselectBySelection(d3.select(this));
     }
@@ -388,10 +385,11 @@ function nodeSelect(targetNodeName, selection) {
 }
 function nodeUnselectBySelection(unselectNodes) {
   // console.log('Unselecting', unselectNodes);
-  unselectNodes.classed('highlight', false);
-  unselectNodes.selectAll('text,line').each(function () {
-    d3.select(this).classed('highlight', false);
-  });
+  unselectNodes.classed('highlight', false).select('circle')
+  .attr('r', 10);
+/*   unselectNodes.selectAll('text,line').each(function () {
+    d3.select(this).classed('highlight', false)
+  }); */
 }
 /* function nodeUnselectByName(name) {
   d3.selectAll('g.node').each(function (d) {

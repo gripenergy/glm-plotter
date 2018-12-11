@@ -48,7 +48,7 @@ circle.node {
   fill: rgb(204, 204, 0);
   fill: rgb(255, 169, 44);
 }
-.node.substation.meter circle {
+.node.substation circle {
   fill: rgb(255, 255, 0);
 }
 .node.pole circle {
