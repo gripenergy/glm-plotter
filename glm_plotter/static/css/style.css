@@ -1,9 +1,9 @@
 /* General formatting */
-.col {
+/* .col {
   width: 960px;
   margin: 0 auto;
   border: solid 1px #eee;
-}
+} */
 
 #main {
   position: relative;
@@ -49,7 +49,7 @@ circle.node {
   fill: rgb(255, 169, 44);
 }
 .node.substation circle {
-  fill: rgb(255, 255, 0);
+  fill: rgb(199, 0, 57);
 }
 .node.pole circle {
   fill: rgb(244, 113, 66);
@@ -58,6 +58,16 @@ circle.node {
 circle.meter {
   fill: rgb(44, 160, 44);
   fill: rgb(178, 106, 0);
+}
+
+.node.medium circle {
+  fill: #000;
+  fill: orange;
+}
+
+.node.high circle {
+  fill: #000;
+  fill: red;
 }
 
 .node:hover circle,
@@ -71,7 +81,9 @@ circle.meter {
   fill: #ff0000;
 }
 .node:hover text,
-.node.highlight text {
+.node.highlight text,
+.node.high text,
+.node.medium text {
   font-size: 30px;
   font-weight: bold;
 }
@@ -82,12 +94,16 @@ circle.meter {
   font-size: 16px;
 }
 .node:hover g,
-.node.highlight g {
+.node.highlight g,
+.node.high g,
+.node.medium g {
   display: inline;
   font-weight: bold;
 }
 .node:hover text,
-.node.highlight text {
+.node.highlight text,
+.node.high text,
+.node.medium text {
   font-size: 30px;
   font-weight: bold;
 }
@@ -125,6 +141,17 @@ circle.meter {
   font-size: 16px;
   display: none;
 }
+
+.link.medium line {
+  stroke: orange;
+  stroke-width: 8px;
+}
+
+.link.high line {
+  stroke: red;
+  stroke-width: 8px;
+}
+
 .link:hover line,
 .link.highlight line {
   stroke: #ff0000;
@@ -132,7 +159,9 @@ circle.meter {
 }
 
 .link:hover text,
-.link.highlight text {
+.link.highlight text,
+.link.high text,
+.link.medium text {
   /* fill: #ff0000; */
   display: inline;
   font-weight: bold;

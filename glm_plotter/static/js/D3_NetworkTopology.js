@@ -211,11 +211,36 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       d.x = fixedNodes.x[idNode];
       d.y = fixedNodes.y[idNode];
     }
+
+    if (!configuration.selectionBands) {
+      return
+    }
+    // TODO: Set up these selectionBands on links
+    d.normalSize = 10;
+    if (configuration.selectionBands.medium) {
+      console.log('1AAA configuration.selectionBands',configuration.selectionBands)
+      configuration.selectionBands.medium.forEach(item => {
+        if (item == d.name) {
+          nodeSelect(item, null, 'medium', false);
+          d.medium = true;
+          d.normalSize = 20;
+        }
+      })
+    }
+    if (configuration.selectionBands.high) {
+      configuration.selectionBands.high.forEach(item => {
+        if (item == d.name) {
+          nodeSelect(item, null, 'high', false);
+          d.high = true;
+          d.normalSize = 20;
+        }
+      })
+    }
   });
 
   link.on('mouseover', function (e) {
     mouseOverHandler(e);
-  });
+  }); 
   link.on('mouseout', function (e) {
     mouseOutHandler(e);
   });
@@ -229,9 +254,13 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
   });
   node.on('mouseout', function (e) {
     mouseOutHandler(e); //Run first in case of re-render (React).
-    d3.select(this)
+    const circle = d3.select(this)
       .select('circle')
-      .attr('r', 10);
+    console.log('mouseout this', this, 'e', e);
+    /* if (!e.medium && !e.high) {
+      circle.attr('r', 10);
+    } */
+    circle.attr('r', e.normalSize);
   });
   force
     .nodes(graph.nodes)
@@ -367,27 +396,33 @@ function handleNodeSearch() {
   nodeSelect(document.getElementById('nodeSearchNm').value);
 }
 
-function nodeSelect(targetNodeName, selection) {
-  console.log('nodeSelect', targetNodeName);
+function nodeSelect(targetNodeName, selection, clazz, unselectOthers) {
+  console.log('nodeSelect', targetNodeName, clazz);
   if (!selection) {
     selection = 'g.node,g.link';
+  }
+  if (!clazz) {
+    clazz = 'highlight';
   }
   const nodes = d3.selectAll(selection);
   nodes.each(function (d) {
     if (d.name === targetNodeName) {
       console.log('Found', d, d.name);
       console.log('Selecting', d3.select(this));
-      d3.select(this).classed('highlight', true).select('circle')
+      d3.select(this).classed(clazz, true).select('circle')
       .attr('r', 20);
     } else {
-      nodeUnselectBySelection(d3.select(this));
+      // Unselect others by default
+      //if (unselectOthers == null || unselectOthers == true) {
+        nodeUnselectBySelection(d3.select(this), d);
+      //}
     }
   });
 }
-function nodeUnselectBySelection(unselectNodes) {
+function nodeUnselectBySelection(unselectNode,unselectNodeEvent) {
   // console.log('Unselecting', unselectNodes);
-  unselectNodes.classed('highlight', false).select('circle')
-  .attr('r', 10);
+  unselectNode.classed('highlight', false).select('circle')
+  .attr('r', unselectNodeEvent.normalSize);
 /*   unselectNodes.selectAll('text,line').each(function () {
     d3.select(this).classed('highlight', false)
   }); */
