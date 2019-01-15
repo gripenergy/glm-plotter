@@ -4,6 +4,7 @@ JAC - jdechalendar@stanford.edu
 import os
 import json
 from . import GLMparser
+import traceboack
 
 config = {}
 config['UPLOAD_FOLDER'] = 'uploads'
@@ -116,18 +117,20 @@ def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None):
         try:
             with open(fixed_nodes_json_file) as json_data:
                 fixedNodesJSON = json.load(json_data)
-        except:
-
+        except Exception as e:
+            traceback.print_exc()
             print(f'No data found in {fixed_nodes_json_file}')
+            raise e
 
     if graph_json_file is not None:
         print(f'*** 3')
         try:
             with open(graph_json_file) as json_data:
                 graphJSON = json.load(json_data)
-        except:
+        except Exception as e:
             traceback.print_exc()
             print(f'No data found in {graph_json_file}')
+            raise e
 
     print(f'*** 3: {graphJSON}')
     resp = {"file": glm_name, "graph":
