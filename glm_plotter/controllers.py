@@ -92,26 +92,29 @@ def parseGlmFile(glmFile):
     return graphJSON
 
 
-def getGraphData(glm_name):
+# If no Graph file path is provided, use the local graph file from the last parsing
+# If no Fixed Nodes file path is provided, use the local graph file from the last parsing
+# Only one graph file and fixed nodes file is currently supported at any given time.
+def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None):
     print(f'getGraphData glm file name: {glm_name}')
     csvFile = getCsvFile()
     glm_name = glm_name if glm_name else getDefaultGlmName()
     fixedNodesJSON = getDefaultFixedNodesJson()
     graphJSON = getDefaultGraphJson()
 
-    try:
-        with open(fixed_nodes_json_file) as json_data:
-            fixedNodesJSON = json.load(json_data)
-    except:
-        print(f'No data found in {fixed_nodes_json_file}')
-        pass
+    if fixed_nodes_json_file is not None:
+        try:
+            with open(fixed_nodes_json_file) as json_data:
+                fixedNodesJSON = json.load(json_data)
+        except:
+            print(f'No data found in {fixed_nodes_json_file}')
 
-    try:
-        with open(graph_json_file) as json_data:
-            graphJSON = json.load(json_data)
-    except:
-        print(f'No data found in {graph_json_file}')
-        pass
+    if graph_json_file is not None:
+        try:
+            with open(graph_json_file) as json_data:
+                graphJSON = json.load(json_data)
+        except:
+            print(f'No data found in {graph_json_file}')
 
     resp = {"file": glm_name, "graph":
             graphJSON, "fixedNodes": fixedNodesJSON}
