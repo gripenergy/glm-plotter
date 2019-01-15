@@ -11,6 +11,14 @@ fixed_nodes_json_file = 'fixed_nodes.json'
 graph_json_file = 'graph.json'
 
 
+def get_graph_json_file():
+    return graph_json_file
+
+
+def get_fixed_nodes_json_file():
+    return fixed_nodes_json_file
+
+
 def get_glm_file_name(session):
     return session['glm_name'] if 'glm_name' in session else None
 
@@ -102,7 +110,7 @@ def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None):
     fixedNodesJSON = getDefaultFixedNodesJson()
     graphJSON = getDefaultGraphJson()
 
-    printf('*** 1: {graph_json_file}')
+    print(f'*** 1: {graph_json_file}')
     if fixed_nodes_json_file is not None:
         print(f'*** 2')
         try:

@@ -1,8 +1,6 @@
 version: "3"
 services:
   web:
-    volumes:
-      - ~/.aws:/root/.aws
     build: .
     ports:
       - ${PORT-5000}:${PORT-5000}
