@@ -104,7 +104,7 @@ def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None):
 
     printf('*** 1: {graph_json_file}')
     if fixed_nodes_json_file is not None:
-         printf('*** 2')
+        printf('*** 2')
         try:
             with open(fixed_nodes_json_file) as json_data:
                 fixedNodesJSON = json.load(json_data)
