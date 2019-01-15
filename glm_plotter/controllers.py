@@ -4,7 +4,7 @@ JAC - jdechalendar@stanford.edu
 import os
 import json
 from . import GLMparser
-import traceboack
+import traceback
 
 config = {}
 config['UPLOAD_FOLDER'] = 'uploads'
