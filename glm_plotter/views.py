@@ -29,7 +29,6 @@ def index():
 def data():
     print(f'{request.method} {request.path}')
     # print(session)
-    print(f'5*** {controllers.get_graph_json_file()}')
     resp = controllers.getGraphData(glm_name=controllers.get_glm_file_name(
-        session), fixed_nodes_json_file=controllers.get_fixed_nodes_json_file(), graph_json_file=controllers.get_graph_json_file())
+        session), fixed_nodes_json_file=controllers.get_fixed_nodes_json_file(), graph_json_file=controllers.get_graph_json_file(), graph_json=None)
     return jsonify(resp)
