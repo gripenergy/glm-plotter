@@ -54,7 +54,7 @@ def renderMain(method, files, glm_name):
                 pass
 
             print(f'Reading the csv file: {files["fixedNodes"].filename}')
-            #session['csv'] = 1
+            # session['csv'] = 1
             files['fixedNodes'].save(csvFile)
 
             if os.path.isfile(csvFile):
@@ -102,7 +102,9 @@ def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None):
     fixedNodesJSON = getDefaultFixedNodesJson()
     graphJSON = getDefaultGraphJson()
 
+    printf('*** 1: {graph_json_file}')
     if fixed_nodes_json_file is not None:
+         printf('*** 2')
         try:
             with open(fixed_nodes_json_file) as json_data:
                 fixedNodesJSON = json.load(json_data)
@@ -110,12 +112,14 @@ def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None):
             print(f'No data found in {fixed_nodes_json_file}')
 
     if graph_json_file is not None:
+        printf('*** 3')
         try:
             with open(graph_json_file) as json_data:
                 graphJSON = json.load(json_data)
         except:
             print(f'No data found in {graph_json_file}')
 
+    printf('*** 3: {graphJSON}')
     resp = {"file": glm_name, "graph":
             graphJSON, "fixedNodes": fixedNodesJSON}
 
