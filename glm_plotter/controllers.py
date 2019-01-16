@@ -5,6 +5,7 @@ import os
 import json
 from . import GLMparser
 import traceback
+import json
 
 config = {}
 config['UPLOAD_FOLDER'] = 'uploads'
@@ -98,7 +99,7 @@ def parseGlmFile(glmFile):
     with open(graph_json_file, 'w') as outfile:
         print(f'Writing to {graph_json_file}: {graphJSON}')
         outfile.write(graphJSON)
-    return dict(graphJSON)
+    return json.loads(graphJSON)
 
 
 # If no Graph file path is provided, use the local graph file from the last parsing
