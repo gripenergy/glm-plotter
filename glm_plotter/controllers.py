@@ -98,7 +98,7 @@ def parseGlmFile(glmFile):
     with open(graph_json_file, 'w') as outfile:
         print(f'Writing to {graph_json_file}: {graphJSON}')
         outfile.write(graphJSON)
-    return graphJSON
+    return dict(graphJSON)
 
 
 # If no Graph file path is provided, use the local graph file from the last parsing
