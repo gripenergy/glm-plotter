@@ -30,8 +30,8 @@
 
 let d3; // Allow the right version to be passed in.
 
-let mouseOverHandler = e => {};
-let mouseOutHandler = e => {};
+let mouseOverHandler = e => { };
+let mouseOutHandler = e => { };
 
 const D3_NetworkTopology = {};
 
@@ -42,7 +42,8 @@ const D3_NetworkTopology = {};
 
 const defaultConfiguration = {
   width: 960,
-  height: 760
+  height: 760,
+  zoomFitDelay: 0 // 4000 is good when not using fixed nodes
 };
 
 let force;
@@ -72,6 +73,7 @@ function zoomFit(zoom, root, paddingPercent, transitionDuration) {
 }
 
 D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
+  console.log('create')
   d3 = d3 || d3ver;
 
   // initialize force
@@ -79,7 +81,7 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
     .force()
     .charge(-120)
     .linkDistance(30)
-    .gravity(0.05)
+    .gravity(0.02)
     .size([
       configuration.width || defaultConfiguration.width,
       configuration.height || defaultConfiguration.height
@@ -114,9 +116,9 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
 
   const drag = force.drag().on('dragstart', dragstart);
 
-  let node = container.selectAll('.node');
+  let nodes = container.selectAll('.node');
 
-  let link = container.selectAll('.link');
+  let links = container.selectAll('.link');
 
   // load data
   /*   d3.json('/data', (error, mydata) => {
@@ -130,7 +132,7 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
 
   myTitle.html(fileNm);
 
-  link = link
+  links = links
     .data(graph.links)
     .enter()
     .append('g')
@@ -141,18 +143,18 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
   // Note: I created the following line object in a 'g' container even though
   // it wasn't necessary in case I want to add something to the container later,
   // like an image - or text
-  const line = link.append('line');
+  const line = links.append('line');
 
   // color the lines according to their type as defined by linkType property in
   // the JSON
-  link.each(function (d) {
+  links.each(function (d) {
     if (d.linkType) {
       d3.select(this).classed(d.linkType, true);
     }
   });
 
   // node 'g' container will contain the node circle and label
-  node = node
+  nodes = nodes
     .data(graph.nodes)
     .enter()
     .append('g')
@@ -162,49 +164,16 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
   // .on("click",clickAction); // this was removed but can be used to display
   // a hidden chart
 
-  node.each(function (d) {
+  nodes.each(function (d) {
+    
     if (d.classNm) {
       d3.select(this).classed(d.classNm, true);
     }
-  });
-  node.each(function (d) {
+
     if (d.child) {
       d3.select(this).classed(d.child, true);
     }
-  });
 
-  const circle = node
-    .append('circle')
-    .attr('r', 10)
-    .attr('class', d => d.classNm);
-  // .style("fill", function(d) { return color(d.group); });
-  const label = node
-    .append('text')
-    .text(d => d.name)
-    .attr('class', 'nodeNm');
-
-  const lineLabel = link.append('text').text(function (d) {
-    return d.name;
-  });
-  const lineLabel2 = link
-    .append('text')
-    .style('font-size', 16)
-    .text(function (d) {
-      return d.linkType;
-    });
-
-  const nodeg = node
-    .append('g')
-    .append('text')
-    .style('font-size', 16)
-    .text(function (d) {
-      if (d.child) {
-        return `${d.classNm}:${d.child}`;
-      }
-      return d.classNm;
-    });
-
-  node.each(function (d) {
     const idNode = fixedNodes.names.indexOf(d.name);
     if (idNode > -1) {
       d3.select(this).classed('fixed', (d.fixed = true));
@@ -218,12 +187,12 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
     // TODO: Set up these selectionBands on links
     d.normalSize = 10;
     if (configuration.selectionBands.medium) {
-      console.log('1AAA configuration.selectionBands',configuration.selectionBands)
+      console.log('1AAA configuration.selectionBands', configuration.selectionBands)
       configuration.selectionBands.medium.forEach(item => {
         if (item == d.name) {
           nodeSelect(item, null, 'medium', false);
-          d.medium = true;
-          d.normalSize = 20;
+          this.medium = true;
+          this.normalSize = 20;
         }
       })
     }
@@ -231,20 +200,52 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       configuration.selectionBands.high.forEach(item => {
         if (item == d.name) {
           nodeSelect(item, null, 'high', false);
-          d.high = true;
-          d.normalSize = 20;
+          this.high = true;
+          this.normalSize = 20;
         }
       })
     }
   });
 
-  link.on('mouseover', function (e) {
+
+  const circle = nodes
+    .append('circle')
+    .attr('r', 10)
+    .attr('class', d => d.classNm);
+  // .style("fill", function(d) { return color(d.group); });
+  const label = nodes
+    .append('text')
+    .text(d => d.name)
+    .attr('class', 'nodeNm');
+
+  const lineLabel = links.append('text').text(function (d) {
+    return d.name;
+  });
+  const lineLabel2 = links
+    .append('text')
+    .style('font-size', 16)
+    .text(function (d) {
+      return d.linkType;
+    });
+
+  const nodeg = nodes
+    .append('g')
+    .append('text')
+    .style('font-size', 16)
+    .text(function (d) {
+      if (d.child) {
+        return `${d.classNm}:${d.child}`;
+      }
+      return d.classNm;
+    });
+
+  links.on('mouseover', function (e) {
     mouseOverHandler(e);
-  }); 
-  link.on('mouseout', function (e) {
+  });
+  links.on('mouseout', function (e) {
     mouseOutHandler(e);
   });
-  node.on('mouseover', function (e) {
+  nodes.on('mouseover', function (e) {
     // d3.select(this).moveToFront(); //d3 extended needed
     mouseOverHandler(e); //Run first in case of re-render (React).
     d3.select(this)
@@ -252,14 +253,11 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       .attr('r', 20);
 
   });
-  node.on('mouseout', function (e) {
+  nodes.on('mouseout', function (e) {
     mouseOutHandler(e); //Run first in case of re-render (React).
-    const circle = d3.select(this)
-      .select('circle')
+
     console.log('mouseout this', this, 'e', e);
-    /* if (!e.medium && !e.high) {
-      circle.attr('r', 10);
-    } */
+    const circle = d3.select(this).select('circle')
     circle.attr('r', e.normalSize);
   });
   force
@@ -296,7 +294,7 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
 
   setTimeout(() => {
     zoomFit(zoom, container, 0.95, 500);
-  }, 4000);
+  }, defaultConfiguration.zoomFitDelay);
 
   return d3.select(el).select('div');
 }; // end create()
@@ -320,6 +318,7 @@ function dblclick(d) {
 // }
 // }
 function saveXY() {
+  console.log('saveXY')
   const pre = document.getElementById('rmPreText').value;
   let myStr = 'data:text/csv;charset=utf-8,';
   const txtArr = [];
@@ -339,12 +338,12 @@ function saveXY() {
   for (let ii = 0; ii < txtArr.length; ii++) {
     myStr = `${myStr + txtArr[ii]},${cxArr[ii]},${cyArr[ii]}\n`;
   }
-  //	var cc = node.selectAll("circle")
+  //	var cc = nodes.selectAll("circle")
   //	var myStr = "data:text/csv;charset=utf-8,";
   //	cc.each(function(d){
   //		myStr = myStr+[d3.select(this).attr("cx") ,d3.select(this).attr("cy")].join(",") +"\n"
   //	});
-  //	node.selectAll('text.nodeNm').each(function (d){
+  //	nodes.selectAll('text.nodeNm').each(function (d){
   //		d3.select(this).text()
   //	})
   // console.log(myStr)
@@ -354,8 +353,12 @@ function saveXY() {
   dummy.setAttribute('download', 'xycoords.csv');
   document.body.appendChild(dummy);
   dummy.click(); // This will download the data file
+
+  zoomFit(zoom, container, 0.95, 0);
 }
+
 function saveXYfixed() {
+  console.log('saveXYfixed')
   const pre = document.getElementById('rmPreText').value;
   let myStr = 'data:text/csv;charset=utf-8,';
   const txtArr = [];
@@ -385,7 +388,10 @@ function saveXYfixed() {
   dummy.setAttribute('download', 'xycoords.csv');
   document.body.appendChild(dummy);
   dummy.click(); // This will download the data file
+
+  zoomFit(zoom, container, 0.95, 0);
 }
+
 function removePrefix() {
   const pre = document.getElementById('rmPreText').value;
   d3.selectAll('text.nodeNm').text(d => d.name.replace(pre, ''));
@@ -410,22 +416,23 @@ function nodeSelect(targetNodeName, selection, clazz, unselectOthers) {
       console.log('Found', d, d.name);
       console.log('Selecting', d3.select(this));
       d3.select(this).classed(clazz, true).select('circle')
-      .attr('r', 20);
+        .attr('r', 20);
     } else {
       // Unselect others by default
       //if (unselectOthers == null || unselectOthers == true) {
-        nodeUnselectBySelection(d3.select(this), d);
+      nodeUnselectBySelection(d3.select(this), d);
       //}
     }
   });
 }
-function nodeUnselectBySelection(unselectNode,unselectNodeEvent) {
+
+function nodeUnselectBySelection(unselectNode, unselectNodeEvent) {
   // console.log('Unselecting', unselectNodes);
   unselectNode.classed('highlight', false).select('circle')
-  .attr('r', unselectNodeEvent.normalSize);
-/*   unselectNodes.selectAll('text,line').each(function () {
-    d3.select(this).classed('highlight', false)
-  }); */
+    .attr('r', unselectNodeEvent.normalSize);
+  /*   unselectNodes.selectAll('text,line').each(function () {
+      d3.select(this).classed('highlight', false)
+    }); */
 }
 /* function nodeUnselectByName(name) {
   d3.selectAll('g.node').each(function (d) {
@@ -434,12 +441,14 @@ function nodeUnselectBySelection(unselectNode,unselectNodeEvent) {
     }
   });
 } */
+
 function changeLinkDistance() {
   force.linkDistance(Number(document.getElementById('linkLengthVal').value));
 }
 function changeGravity() {
   force.gravity(Number(document.getElementById('gravityVal').value));
 }
+
 function changeCharge() {
   /*  */
   force.charge(Number(document.getElementById('chargeVal').value));
@@ -447,6 +456,7 @@ function changeCharge() {
 function registerMouseOverHandler(handler) {
   mouseOverHandler = handler;
 }
+
 function registerMouseOutHandler(handler) {
   mouseOutHandler = handler;
 }
