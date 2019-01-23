@@ -165,7 +165,6 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
   // a hidden chart
 
   nodes.each(function (d) {
-    
     if (d.classNm) {
       d3.select(this).classed(d.classNm, true);
     }
@@ -181,6 +180,7 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       d.y = fixedNodes.y[idNode];
     }
 
+    d.normalSize = 10;
     if (!configuration.selectionBands) {
       return
     }
@@ -191,8 +191,8 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       configuration.selectionBands.medium.forEach(item => {
         if (item == d.name) {
           nodeSelect(item, null, 'medium', false);
-          this.medium = true;
-          this.normalSize = 20;
+          d.medium = true;
+          d.normalSize = 20;
         }
       })
     }
@@ -200,8 +200,8 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
       configuration.selectionBands.high.forEach(item => {
         if (item == d.name) {
           nodeSelect(item, null, 'high', false);
-          this.high = true;
-          this.normalSize = 20;
+          d.high = true;
+          d.normalSize = 20;
         }
       })
     }

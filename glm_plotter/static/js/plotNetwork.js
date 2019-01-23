@@ -15,8 +15,6 @@ d3.json('/data', function(error, mydata) {
   //console.log("$$$$", el);
   D3_NetworkTopology.then(d => {
     console.log('D3_NetworkTopology', d.default);
-    networkTopology = d;
-
     d.default.create(el, data, configuration, d3);
   });
 });
