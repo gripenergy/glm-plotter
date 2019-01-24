@@ -30,8 +30,8 @@
 
 let d3; // Allow the right version to be passed in.
 
-let mouseOverHandler = e => { };
-let mouseOutHandler = e => { };
+let mouseOverHandler = e => {};
+let mouseOutHandler = e => {};
 
 const D3_NetworkTopology = {};
 
@@ -43,38 +43,56 @@ const D3_NetworkTopology = {};
 const defaultConfiguration = {
   width: 960,
   height: 760,
-  zoomFitDelay: 0 // 4000 is good when not using fixed nodes
+  zoomFitDelay: 4000 // 0 is good when using fixed nodes
 };
+let configuration;
 
 let force;
+let svg;
 
+// root = g element.  svg is the parent of g.
 function zoomFit(zoom, root, paddingPercent, transitionDuration) {
-  // console.log('zoomFit', 'root',root, 'paddingPercent', paddingPercent, 'transitionDuration', transitionDuration)
-  const bounds = root.node().getBBox();
-  const parent = root.node().parentElement;
-  const fullWidth = parent.clientWidth;
+  console.log(
+    'zoomFit',
+    'root',
+    root,
+    'paddingPercent',
+    paddingPercent,
+    'transitionDuration',
+    transitionDuration
+  );
 
-  const fullHeight = parent.clientHeight;
-  const width = bounds.width;
+  // Allow override in cases where the chart is no currently displayed on the page
+  const rootNode = root.node() || svg;
+  const bounds = rootNode.getBBox();
+  const parent = rootNode.parentElement;
 
-  const height = bounds.height;
-  const midX = bounds.x + width / 2;
+  const fullWidth = parent.clientWidth || parent.getAttribute('width') // configuration.width;
+  const fullHeight = parent.clientHeight || parent.getAttribute('height'); //configuration.height;
 
-  const midY = bounds.y + height / 2;
+  const width = bounds.width || configuration.bounds.width; // parent.getAttribute('width');
+  const height = bounds.height || configuration.bounds.height;  //parent.getAttribute('height');
+
+  const midX = ( bounds.x || configuration.bounds.x) + width / 2;
+  const midY = ( bounds.y || configuration.bounds.y) + height / 2;
+
   if (width == 0 || height == 0) return; // nothing to fit
   const scale = (paddingPercent || 0.75) / Math.max(width / fullWidth, height / fullHeight);
   const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
 
-  console.trace('zoomFit', translate, scale);
+  // console.log('zoomFit2', translate, scale);
   root
     .transition()
     .duration(transitionDuration || 0) // milliseconds
     .call(zoom.translate(translate).scale(scale).event);
 }
 
-D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
-  console.log('create')
+let zoom;
+let container;
+D3_NetworkTopology.create = (el, data, config, d3ver) => {
+  console.log('D3_NetworkTopology create');
   d3 = d3 || d3ver;
+  configuration = { ...defaultConfiguration, ...(config || {}) };
 
   // initialize force
   force = d3.layout
@@ -82,32 +100,38 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
     .charge(-120)
     .linkDistance(30)
     .gravity(0.02)
-    .size([
-      configuration.width || defaultConfiguration.width,
-      configuration.height || defaultConfiguration.height
-    ]);
+    .size([configuration.width, configuration.height]);
 
   const myTitle = d3.select('#main').append('h1');
 
-  const svg = d3
+  svg = d3
     .select(el)
     .append('div')
     .attr('class', 'col')
     .append('svg')
-    .attr('width', configuration.width || defaultConfiguration.width)
-    .attr('height', configuration.height || defaultConfiguration.width);
+    .attr('width', configuration.width)
+    .attr('height', configuration.height);
 
-  const container = svg.append('g');
+  container = svg.append('g');
+
+  console.log(
+    'D3_NetworkTopologycontainer',
+    svg,
+    'container',
+    container,
+    configuration.width,
+    configuration.height
+  );
 
   // zooming
   const min_zoom = 0.1;
   const max_zoom = 5;
 
-  const zoom = d3.behavior
+  zoom = d3.behavior
     .zoom()
     .scaleExtent([min_zoom, max_zoom])
     .on('zoom', zoomed);
-
+  console.log('D3_NetworkTopologycontainer1');
   function zoomed() {
     container.attr('transform', `translate(${d3.event.translate})scale(${d3.event.scale})`);
   }
@@ -182,19 +206,19 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
 
     d.normalSize = 10;
     if (!configuration.selectionBands) {
-      return
+      return;
     }
     // TODO: Set up these selectionBands on links
     d.normalSize = 10;
     if (configuration.selectionBands.medium) {
-      console.log('1AAA configuration.selectionBands', configuration.selectionBands)
+      console.log('1AAA configuration.selectionBands', configuration.selectionBands);
       configuration.selectionBands.medium.forEach(item => {
         if (item == d.name) {
           nodeSelect(item, null, 'medium', false);
           d.medium = true;
           d.normalSize = 20;
         }
-      })
+      });
     }
     if (configuration.selectionBands.high) {
       configuration.selectionBands.high.forEach(item => {
@@ -203,10 +227,9 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
           d.high = true;
           d.normalSize = 20;
         }
-      })
+      });
     }
   });
-
 
   const circle = nodes
     .append('circle')
@@ -247,17 +270,16 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
   });
   nodes.on('mouseover', function (e) {
     // d3.select(this).moveToFront(); //d3 extended needed
-    mouseOverHandler(e); //Run first in case of re-render (React).
+    mouseOverHandler(e); // Run first in case of re-render (React).
     d3.select(this)
       .select('circle')
       .attr('r', 20);
-
   });
   nodes.on('mouseout', function (e) {
-    mouseOutHandler(e); //Run first in case of re-render (React).
+    mouseOutHandler(e); // Run first in case of re-render (React).
 
     console.log('mouseout this', this, 'e', e);
-    const circle = d3.select(this).select('circle')
+    const circle = d3.select(this).select('circle');
     circle.attr('r', e.normalSize);
   });
   force
@@ -294,7 +316,7 @@ D3_NetworkTopology.create = (el, data, configuration, d3ver) => {
 
   setTimeout(() => {
     zoomFit(zoom, container, 0.95, 500);
-  }, defaultConfiguration.zoomFitDelay);
+  }, configuration.zoomFitDelay);
 
   return d3.select(el).select('div');
 }; // end create()
@@ -318,7 +340,7 @@ function dblclick(d) {
 // }
 // }
 function saveXY() {
-  console.log('saveXY')
+  console.log('saveXY');
   const pre = document.getElementById('rmPreText').value;
   let myStr = 'data:text/csv;charset=utf-8,';
   const txtArr = [];
@@ -354,11 +376,11 @@ function saveXY() {
   document.body.appendChild(dummy);
   dummy.click(); // This will download the data file
 
-  zoomFit(zoom, container, 0.95, 0);
+  // zoomFit(zoom, container, 0.95, 0);
 }
 
 function saveXYfixed() {
-  console.log('saveXYfixed')
+  console.log('saveXYfixed');
   const pre = document.getElementById('rmPreText').value;
   let myStr = 'data:text/csv;charset=utf-8,';
   const txtArr = [];
@@ -389,7 +411,7 @@ function saveXYfixed() {
   document.body.appendChild(dummy);
   dummy.click(); // This will download the data file
 
-  zoomFit(zoom, container, 0.95, 0);
+  // zoomFit(zoom, container, 0.95, 0);
 }
 
 function removePrefix() {
@@ -415,20 +437,24 @@ function nodeSelect(targetNodeName, selection, clazz, unselectOthers) {
     if (d.name === targetNodeName) {
       console.log('Found', d, d.name);
       console.log('Selecting', d3.select(this));
-      d3.select(this).classed(clazz, true).select('circle')
+      d3.select(this)
+        .classed(clazz, true)
+        .select('circle')
         .attr('r', 20);
     } else {
       // Unselect others by default
-      //if (unselectOthers == null || unselectOthers == true) {
+      // if (unselectOthers == null || unselectOthers == true) {
       nodeUnselectBySelection(d3.select(this), d);
-      //}
+      // }
     }
   });
 }
 
 function nodeUnselectBySelection(unselectNode, unselectNodeEvent) {
   // console.log('Unselecting', unselectNodes);
-  unselectNode.classed('highlight', false).select('circle')
+  unselectNode
+    .classed('highlight', false)
+    .select('circle')
     .attr('r', unselectNodeEvent.normalSize);
   /*   unselectNodes.selectAll('text,line').each(function () {
       d3.select(this).classed('highlight', false)
