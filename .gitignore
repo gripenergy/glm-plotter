@@ -85,3 +85,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# glm_plotter specific
+graph.json
+fixed_nodes.json
+node_modules/
+

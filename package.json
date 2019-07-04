@@ -1,0 +1,28 @@
+{
+  "name": "glm-plotter",
+  "version": "1.0.0",
+  "description": "An interactive visualization app for power system networks described in [Gridlab-D](http://www.gridlabd.org/) Model files. Back-end uses Flask and front-end uses D3's force layout.",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcald1/glm-plotter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcald1/glm-plotter/issues"
+  },
+  "homepage": "https://github.com/jcald1/glm-plotter#readme",
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1"
+  }
+}

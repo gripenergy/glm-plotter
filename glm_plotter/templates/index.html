@@ -4,7 +4,7 @@
 <style>body { font: 12px Arial;}</style>
 <body>
 <div id="fileChooser">
-	<form action="/" method="post" enctype="multipart/form-data">
+	<form method="post" enctype="multipart/form-data">
 	    <input type="file" name="glm_file" value="e"/>
 	    <input type="submit" value="Submit glm model" />
 	</form>
@@ -12,6 +12,7 @@
 <div id="main"></div>
 <script src="static/lib/js/d3.js"></script>
 
+<!-- <script src="static/js/D3_NetworkTopology.js"></script> -->
 <script src="static/js/plotNetwork.js"></script>
 
 
@@ -42,13 +43,13 @@ Legend:
     <input name="saveButton" 
            type="button" 
            value="save XY coords of all nodes" 
-           onclick="saveXY()" />
+           onclick="D3_NetworkTopology.then((d) => d.default.saveXY())" />
 </div>
 <div id="option">
     <input name="saveFixedButton" 
            type="button" 
            value="save XY coords of fixed nodes" 
-           onclick="saveXYfixed()" />
+           onclick="D3_NetworkTopology.then((d) => d.default.saveXYfixed()" />
 </div>
 <div id="prefixRemover">
 	<input name="prefixRemoverTxt" 
@@ -58,7 +59,7 @@ Legend:
     <input name="prefixRemoverButton" 
 		type="button" 
 		value="remove prefix in node names" 
-		onclick="removePrefix()" />
+		onclick="D3_NetworkTopology.then((d) => d.default.removePrefix()" />
 <div id="nodeSearch">
 	<input name="nodeSearchTxt" 
 		id="nodeSearchNm"
@@ -67,7 +68,7 @@ Legend:
     <input name="searchNodeButton" 
 		type="button" 
 		value="search" 
-		onclick="nodeSearcher()" />
+		onclick="D3_NetworkTopology.then((d) => d.default.handleNodeSearch())" />
 </div>
 <div id="gravityChooser">
 	<input name="garvityTxt" 
@@ -77,9 +78,9 @@ Legend:
     <input name="gravityButton" 
 		type="button" 
 		value="change gravity" 
-		onclick="changeGravity()" />
+		onclick="D3_NetworkTopology.then((d) => d.default.changeGravity())" />
 </div>
-<form action="/" method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
     <input type="file" name="fixedNodes" />
     <input type="submit" value="Submit fixed positions csv"/>
 </form>

@@ -3,7 +3,6 @@ JAC - jdechalendar@stanford.edu
 """
 import pandas as pd
 
-
 def readGLM(iFile, verb=0):
     """
     Main function to parse GLM files
@@ -202,23 +201,25 @@ def createD3JSON(objs, fileNm_out=''):
     link_type = ['overhead_line', 'switch', 'underground_line',
                  'regulator', 'transformer', 'triplex_line', 'fuse']
     link_objs = [obj for obj in objs if obj['class'] in link_type]
+    
     links = list(
         zip([getAieul(objs, link['from'])[0]['name'] for link in link_objs],
             [getAieul(objs, link['to'])[0]['name'] for link in link_objs],
-            [link['class'] for link in link_objs]))
-
+            [link['class'] for link in link_objs],
+            [link['name'] for link in link_objs]))
     # define nodes I want to plot
-    node_type = ['node', 'load', 'meter', 'triplex_meter', 'triplex_node']
+    #print(f'ObjectsAAA',objs)
+    node_type = ['node', 'load', 'meter', 'triplex_meter', 'triplex_node', 'pole', 'substation']
     parent_objs = [obj for obj in objs if 'parent' not in obj]
     node_objs = [obj for obj in parent_objs if obj['class'] in node_type]
 
     # children I want to plot
-    child_type = ['diesel_dg', 'capacitor']
-    children = dict([(obj['parent'], obj['class'])
+    child_type = ['diesel_dg', 'capacitor', 'meter', 'house']
+    children = dict([(obj['parent'] if 'parent' in obj else '', obj['class'])
                      for obj in objs if obj['class'] in child_type])
     # find unique nodes
     unique_nodes = list(
-        set([n1 for n1, n2, n3 in links] + [n2 for n1, n2, n3 in links]
+        set([n1 for n1, n2, n3, n4 in links] + [n2 for n1, n2, n3, n4 in links]
             + [nd['name'] for nd in node_objs]))
     if len(unique_nodes) > len(node_objs):
         print('I had to add ' + str(len(unique_nodes) - len(node_objs))
@@ -244,13 +245,17 @@ def createD3JSON(objs, fileNm_out=''):
                         + str(unique_nodes.index(links[iLink][0]))
                         + ',"target":'
                         + str(unique_nodes.index(links[iLink][1]))
-                        + ',"linkType":"' + links[iLink][2] + '"},\n')
+                        + ',"linkType":"' + links[iLink][2]+ '"'
+                        + ',"name":"' + links[iLink][3] + '"},\n')
         JSONstr += ('    {"source":'
                     + str(unique_nodes.index(links[len(links)-1][0]))
                     + ',"target":'
                     + str(unique_nodes.index(links[len(links)-1][1]))
-                    + ',"linkType":"' + links[len(links)-1][2] + '"}\n')
+                    + ',"linkType":"' + links[len(links)-1][2] + '"'
+                    + ',"name":"' + links[len(links)-1][3] + '"}\n')
     JSONstr += '  ]\n}'
+    #print(f'**** {JSONstr}')
+    #print(f'**** {fileNm_out}')
     if fileNm_out:
         with open(fileNm_out, 'w') as f:
             f.write(JSONstr)

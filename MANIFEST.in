@@ -1,0 +1,2 @@
+recursive-include glm_plotter/templates *
+recursive-include glm_plotter/static *

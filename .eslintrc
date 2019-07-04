@@ -1,0 +1,20 @@
+{
+  "extends": ["airbnb-base", "plugin:react/recommended"],
+  "env": {
+    "browser": true,
+    "node": true,
+    "jasmine": true
+  },
+  "rules": {
+    "jsx-a11y/href-no-hash": 0,
+    "class-methods-use-this": 0,
+    "react/prop-types": 0,
+    "comma-dangle": 0,
+    "consistent-return": "off",
+    "no-param-reassign": "off",
+    "arrow-parens": "off",
+    "operator-linebreak": "off",
+    "no-console": "off"
+    
+  }
+}

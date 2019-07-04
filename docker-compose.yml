@@ -1,0 +1,9 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+      - ${PORT-5000}:${PORT-5000}
+    environment:
+      - PORT
+      - FLASK_APP=glm_plotter

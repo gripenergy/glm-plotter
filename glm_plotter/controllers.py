@@ -1,0 +1,151 @@
+"""
+JAC - jdechalendar@stanford.edu
+"""
+import os
+import json
+from . import GLMparser
+import traceback
+import json
+
+config = {}
+config['UPLOAD_FOLDER'] = 'uploads'
+fixed_nodes_json_file = 'fixed_nodes.json'
+graph_json_file = 'graph.json'
+
+
+def get_graph_json_file():
+    return graph_json_file
+
+
+def get_fixed_nodes_json_file():
+    return fixed_nodes_json_file
+
+
+def get_glm_file_name(session):
+    return session['glm_name'] if 'glm_name' in session else None
+
+
+def getCsvFile():
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),                         config['UPLOAD_FOLDER'], "curr.csv")
+
+
+def getGlmFile():
+    return os.path.join(os.path.dirname(os.path.realpath(__file__)),                         config['UPLOAD_FOLDER'], "curr.glm")
+
+
+def getDefaultGlmName():
+    return ''
+
+
+def getDefaultFixedNodesJson():
+    return json.loads('{"names":[], "x":[], "y":[]}')
+
+
+def getDefaultGraphJson():
+    return json.loads('{"nodes":[],"links":[]}')
+
+
+def renderMain(method, files, glm_name):
+    csvFile = getCsvFile()
+    glmFile = getGlmFile()
+    glm_name = glm_name if glm_name else getDefaultGlmName()
+    fixedNodesJSON = getDefaultFixedNodesJson()
+    graphJSON = getDefaultGraphJson()
+
+    if method == 'POST':
+        if (('fixedNodes' in files) and files['fixedNodes']
+            and (files['fixedNodes'].filename
+                 .rsplit('.', 1)[1] == 'csv')):
+            try:
+                with open(graph_json_file) as json_data:
+                    graphJSON = json.load(json_data)
+            except:
+                print(f'Unable to open {graph_json_file}')
+                pass
+
+            print(f'Reading the csv file: {files["fixedNodes"].filename}')
+            # session['csv'] = 1
+            files['fixedNodes'].save(csvFile)
+
+            if os.path.isfile(csvFile):
+                fixedNodesJSON = parseFixedNodes(csvFile)
+                with open(fixed_nodes_json_file, 'w') as outfile:
+                    print(f'Writing to {fixed_nodes_json_file}')
+                    outfile.write(fixedNodesJSON)
+
+        if (('glm_file' in files) and files['glm_file']
+            and (files['glm_file'].filename
+                 .rsplit('.', 1)[1] == 'glm')):
+            try:
+                with open(fixed_nodes_json_file) as json_data:
+                    fixedNodesJSON = json.load(json_data)
+            except:
+                pass
+
+            print(f'Reading the glm file: {files["glm_file"].filename}')
+            glm_name = files['glm_file'].filename
+            files['glm_file'].save(glmFile)
+
+            parseGlmFile(glmFile)
+
+    return {"glm_name": glm_name}
+
+
+def parseGlmFile(glmFile):
+    if not os.path.isfile(glmFile):
+        raise ValueError(f'File {glmFile} could not be read')
+    objs, modules, commands = GLMparser.readGLM(glmFile)
+    graphJSON = GLMparser.createD3JSON(objs)
+    with open(graph_json_file, 'w') as outfile:
+        print(f'Writing to {graph_json_file}: {graphJSON}')
+        outfile.write(graphJSON)
+    return json.loads(graphJSON)
+
+
+# If no Graph file path is provided, use the local graph file from the last parsing
+# If no Fixed Nodes file path is provided, use the local graph file from the last parsing
+# Only one graph file and fixed nodes file is currently supported at any given time.
+def getGraphData(glm_name, fixed_nodes_json_file=None, graph_json_file=None, graph_json=None):
+    print(f'getGraphData glm_name file name: {glm_name} graph_json_file={graph_json_file}, graph_json={graph_json}')
+    glm_name = glm_name if glm_name else getDefaultGlmName()
+    fixedNodesJSON = getDefaultFixedNodesJson()
+    graphJSON = graph_json if graph_json else getDefaultGraphJson()
+
+    if fixed_nodes_json_file is not None:
+        try:
+            with open(fixed_nodes_json_file) as json_data:
+                fixedNodesJSON = json.load(json_data)
+        except Exception as e:
+            # traceback.print_exc()
+            print(f'No data found in {fixed_nodes_json_file}')
+
+    # If the Graph JSON is already provided, don't look for it in the file
+    if graph_json is None:
+        if graph_json_file is not None:
+            try:
+                with open(graph_json_file) as json_data:
+                    graphJSON = json.load(json_data)
+            except Exception as e:
+                # traceback.print_exc()
+                print(f'No data found in {graph_json_file}')
+
+    resp = {"file": glm_name, "graph":
+            graphJSON, "fixedNodes": fixedNodesJSON}
+
+    return resp
+
+
+def parseFixedNodes(nodesFile):
+    with open(nodesFile) as fr:
+        lines = fr.readlines()
+    names = []
+    x = []
+    y = []
+    for line in lines:
+        bla = line.split(',')
+        if len(bla) == 3:
+            names.append(bla[0])
+            x.append(float(bla[1]))
+            y.append(float(bla[2]))
+
+    return json.dumps({'names': names, 'x': x, 'y': y})
